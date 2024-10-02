@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>gRPC Real-time Client</title>
+</head>
+<body>
+  <h1>Real-time Data from gRPC Server</h1>
+  <div id="data"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@improbable-eng/grpc-web@0.14.0-rc.3/dist/grpc-web.min.js"></script>
+  
+  <script>
+    const { grpc } = window;
+    
+    const protoPath = './realtime.proto';
+    const client = new grpc.client(RealtimeService.Subscribe, {
+      host: 'https://localhost:50051'
+    });
+
+    client.onMessage = function(message) {
+      document.getElementById('data').innerText += `Message: ${message.getMessage()} at ${message.getTimestamp()}\n`;
+    };
+
+    client.start();
+    client.send({}); // Empty message for Subscribe
+  </script>
+</body>
+</html>
